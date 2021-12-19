@@ -81,7 +81,7 @@ namespace AmongUsRegionsEditor
                     regiontype = statictype;
                 }
 
-                AddDataToRegionTables(addedrownumber, regiontype, r.Fqdn, r.DefaultIp, r.Port.ToString(),r.useDtls, r.Name, r.PingServer, null, r.TranslateName.ToString());
+                AddDataToRegionTables(addedrownumber, false, regiontype, r.Fqdn, r.DefaultIp, r.Port.ToString(),r.useDtls, r.Name, r.PingServer, null, r.TranslateName.ToString());
                 addedrownumber = addedrownumber + 1;
                 /*if (r.Type == "DnsRegionInfo, Assembly-CSharp")
                 {
@@ -119,8 +119,14 @@ namespace AmongUsRegionsEditor
             //Console.WriteLine(dgvRegions.Columns.Count);
         }
 
-        internal void AddDataToRegionTables(int row, string type, string fqdn, string defaultip, string port, string usedtls, string name, string pingserver, List<string> serversdata, string translatename)
+        internal int imp = 0;
+
+        internal void AddDataToRegionTables(int row, bool imported, string type, string fqdn, string defaultip, string port, string usedtls, string name, string pingserver, List<string> serversdata, string translatename)
         {
+            if (imported)
+            {
+                //do nothing here yet... currently doing this in the import function but ideally want to colour in the rows to show they are imported.
+            }
             if (type == dnstype)
             {
                 //we dont support static regions atm, only DNS regions.
@@ -372,6 +378,7 @@ namespace AmongUsRegionsEditor
             }
             var importFiles = Directory.EnumerateFiles(@".\Import\");
             int filecount = 0;
+            List<string> regionnames = new List<string>();
             foreach (var file in importFiles)
             {
                 using (StreamReader r = new StreamReader(file))
@@ -388,7 +395,8 @@ namespace AmongUsRegionsEditor
                     {
                         regiontype = statictype;
                     }
-                    ManageDnsRegionData(-1, regiontype, jsonregion.Fqdn, jsonregion.DefaultIp, jsonregion.Port.ToString(), jsonregion.useDtls,jsonregion.Name, jsonregion.TranslateName.ToString());
+                    regionnames.Add(jsonregion.Name);
+                    ManageDnsRegionData(-1, true, regiontype, jsonregion.Fqdn, jsonregion.DefaultIp, jsonregion.Port.ToString(), jsonregion.useDtls,jsonregion.Name, jsonregion.TranslateName.ToString());
                 }
                 filecount++;
                 File.Delete(file);
@@ -396,6 +404,12 @@ namespace AmongUsRegionsEditor
             if(filecount!=0)
             {
                 WriteRegionInfoJson();
+                string listofregions = "";
+                foreach(string region in regionnames)
+                {
+                    listofregions += $"{region}, ";
+                }
+                MessageBox.Show($"{filecount} Regions were on imported upon loading this program!...{listofregions}","Importing Success",MessageBoxButtons.OK);
             }
         }
 
@@ -417,14 +431,14 @@ namespace AmongUsRegionsEditor
             string regionusedtls = "false";
             string regionname = txtRegionDisplayName.Text;
             string regiontranslatename = "1003";
-            ManageDnsRegionData((int)rownum, regiontype, regionfqdn, regiondefaultip, regionport, regionusedtls, regionname, regiontranslatename);
+            ManageDnsRegionData((int)rownum, false, regiontype, regionfqdn, regiondefaultip, regionport, regionusedtls, regionname, regiontranslatename);
         }
 
-        internal void ManageDnsRegionData(int row, string type, string fqdn, string defaultip, string port, string usedtls, string name, string translatename)
+        internal void ManageDnsRegionData(int row, bool imported, string type, string fqdn, string defaultip, string port, string usedtls, string name, string translatename)
         {
             if (row == -1)
             {
-                AddDataToRegionTables(dgvCustomRegions.Rows.Count, type, fqdn, defaultip, port,usedtls, name, null, null, translatename);
+                AddDataToRegionTables(dgvCustomRegions.Rows.Count,imported, type, fqdn, defaultip, port,usedtls, name, null, null, translatename);
                 //dgvCustomRegions.Rows.Add(type, fqdn, defaultip, port, name, translatename,"","");
                 //dgvCustomRegions.Rows[dgvCustomRegions.Rows.Count-1].Cells[6] = GenerateButton(row, "Edit");
                 //dgvCustomRegions.Rows[dgvCustomRegions.Rows.Count - 1].Cells[7] = GenerateButton(row, "Remove");
