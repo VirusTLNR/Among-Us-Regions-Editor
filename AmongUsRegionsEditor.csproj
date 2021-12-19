@@ -7,7 +7,7 @@
     <ProjectGuid>{66F6FCA6-798E-4920-A43C-FCD1C436D982}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>AmongUsRegionsEditor</RootNamespace>
-    <AssemblyName>Among Us Regions Editor</AssemblyName>
+    <AssemblyName>AmongUsRegionsEditor</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
