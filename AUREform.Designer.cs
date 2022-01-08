@@ -367,7 +367,7 @@ namespace AmongUsRegionsEditor
             this.Controls.Add(this.lblWarning);
             this.MinimumSize = new System.Drawing.Size(800, 450);
             this.Name = "formAURE";
-            this.Text = "Among Us Region Editor (for 2021-12-14 on PC) v0.1";
+            this.Text = "YouShouldentSeeThis";
             this.Load += new System.EventHandler(this.formAURE_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomRegions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOfficialRegions)).EndInit();

@@ -16,6 +16,7 @@ namespace AmongUsRegionsEditor
 {
     public partial class formAURE : Form
     {
+        string titleText = $"Among Us Region Editor(for 2021-12-14 on PC) v{System.Reflection.Assembly.GetEntryAssembly().GetName().Version}";
         string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\..\LocalLow\Innersloth\Among Us\regionInfo.json";
         string testpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\..\LocalLow\Innersloth\Among Us\regionInfoTest.json";
         //string regiontype = null;
@@ -29,6 +30,7 @@ namespace AmongUsRegionsEditor
 
         private void formAURE_Load(object sender, EventArgs e)
         {
+            this.Text = titleText;
             //startup graphics mods to enable easy editing and correct startup positions.
             gbEditingArea.SetBounds(6, 43, 770, 169);
             this.Height = 500;
@@ -329,7 +331,7 @@ namespace AmongUsRegionsEditor
             }
             txtIPAddress.Text = (string)dgvCustomRegions.Rows[row].Cells[2].Value;
             txtPort.Text = (string)dgvCustomRegions.Rows[row].Cells[3].Value;
-            txtRegionDisplayName.Text = (string)dgvCustomRegions.Rows[row].Cells[4].Value;
+            txtRegionDisplayName.Text = (string)dgvCustomRegions.Rows[row].Cells[5].Value;
             gbOfficialRegions.Enabled = false;
             gbEditingArea.Enabled = true;
             gbOfficialRegions.Visible = false;
@@ -448,8 +450,9 @@ namespace AmongUsRegionsEditor
                 dgvCustomRegions.Rows[row].Cells[1].Value = fqdn;
                 dgvCustomRegions.Rows[row].Cells[2].Value = defaultip;
                 dgvCustomRegions.Rows[row].Cells[3].Value = port;
-                dgvCustomRegions.Rows[row].Cells[4].Value = name;
-                dgvCustomRegions.Rows[row].Cells[5].Value = translatename;
+                dgvCustomRegions.Rows[row].Cells[4].Value = usedtls;
+                dgvCustomRegions.Rows[row].Cells[5].Value = name;
+                dgvCustomRegions.Rows[row].Cells[6].Value = translatename;
             }
         }
 
