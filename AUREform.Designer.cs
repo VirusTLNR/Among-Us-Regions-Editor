@@ -54,6 +54,7 @@ namespace AmongUsRegionsEditor
             this.lblName = new System.Windows.Forms.Label();
             this.lblFqdn = new System.Windows.Forms.Label();
             this.txtFqdn = new System.Windows.Forms.TextBox();
+            this.lblSavedRIJ = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomRegions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOfficialRegions)).BeginInit();
             this.gbOfficialRegions.SuspendLayout();
@@ -123,6 +124,7 @@ namespace AmongUsRegionsEditor
             this.gbOfficialRegions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbOfficialRegions.BackColor = System.Drawing.SystemColors.Control;
+            this.gbOfficialRegions.Controls.Add(this.lblSavedRIJ);
             this.gbOfficialRegions.Controls.Add(this.dgvOfficialRegions);
             this.gbOfficialRegions.Controls.Add(this.btnSave);
             this.gbOfficialRegions.Controls.Add(this.btnCreateRegion);
@@ -355,6 +357,16 @@ namespace AmongUsRegionsEditor
             this.txtFqdn.Size = new System.Drawing.Size(176, 20);
             this.txtFqdn.TabIndex = 94;
             // 
+            // lblSavedRIJ
+            // 
+            this.lblSavedRIJ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSavedRIJ.AutoSize = true;
+            this.lblSavedRIJ.Location = new System.Drawing.Point(629, 100);
+            this.lblSavedRIJ.Name = "lblSavedRIJ";
+            this.lblSavedRIJ.Size = new System.Drawing.Size(103, 13);
+            this.lblSavedRIJ.TabIndex = 11;
+            this.lblSavedRIJ.Text = "                                ";
+            // 
             // formAURE
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -372,6 +384,7 @@ namespace AmongUsRegionsEditor
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomRegions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOfficialRegions)).EndInit();
             this.gbOfficialRegions.ResumeLayout(false);
+            this.gbOfficialRegions.PerformLayout();
             this.gbCustomRegions.ResumeLayout(false);
             this.gbCustomRegions.PerformLayout();
             this.gbEditingArea.ResumeLayout(false);
@@ -408,6 +421,7 @@ namespace AmongUsRegionsEditor
         private System.Windows.Forms.CheckBox chkDNS;
         private System.Windows.Forms.Label lblFqdn;
         private System.Windows.Forms.Label lblNoCustomRegions;
+        private System.Windows.Forms.Label lblSavedRIJ;
     }
 }
 

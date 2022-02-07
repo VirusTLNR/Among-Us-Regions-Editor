@@ -16,7 +16,7 @@ namespace AmongUsRegionsEditor
 {
     public partial class formAURE : Form
     {
-        string titleText = $"Among Us Region Editor(for 2021-12-14 on PC) v{System.Reflection.Assembly.GetEntryAssembly().GetName().Version}";
+        string titleText = $"Among Us Region Editor(for 2021-12-14 or newer on PC) v{System.Reflection.Assembly.GetEntryAssembly().GetName().Version}";
         string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\..\LocalLow\Innersloth\Among Us\regionInfo.json";
         string testpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\..\LocalLow\Innersloth\Among Us\regionInfoTest.json";
         //string regiontype = null;
@@ -410,7 +410,7 @@ namespace AmongUsRegionsEditor
                 {
                     listofregions += $"{region}, ";
                 }
-                MessageBox.Show($"{filecount} Regions were on imported upon loading this program!...{listofregions}","Importing Success",MessageBoxButtons.OK);
+                MessageBox.Show($"{filecount} Regions were imported upon loading this program!...{listofregions}","Importing Success",MessageBoxButtons.OK);
             }
         }
 
@@ -521,7 +521,28 @@ namespace AmongUsRegionsEditor
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            btnSave.Enabled = false;
+            lblSavedRIJ.Text = "Saving RegionInfo.json";
             WriteRegionInfoJson();
+            lblSavedRIJ.Text = "RegionInfo.json Saved";
+            //lblSavedRIJ.Text = clearLabelOnTimer(lblSavedRIJ);
+            btnSave.Enabled = true;
         }
+
+        /*private string clearLabelOnTimer(Label label)
+        {
+            bool flag = false;
+            DateTime end = DateTime.UtcNow.AddSeconds(10);
+            while(flag==false)
+            {
+                if(end<=DateTime.UtcNow)
+                {
+                    flag = true;
+                }
+            }
+
+            flag = false;
+            return "";
+        }*/
     }
 }
