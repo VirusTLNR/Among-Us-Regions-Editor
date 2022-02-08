@@ -1,4 +1,5 @@
 # AmongUsRegionsEditor
+How-To video -> https://www.youtube.com/watch?v=3V4ggZcT0zU
 A program which easily allows the editing of the regioninfo.json file which controls the regions you can use in among us. It does not allow editing of official regions, just allows you to import/export (for easy sharing) and add/edit/remove custom regions for private servers
 
 Upon first run, the program will create an "Import" folder in the location it is put, into which you can put an .aur file to easily import a region exported from this program by someone else.
