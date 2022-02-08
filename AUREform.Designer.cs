@@ -33,6 +33,7 @@ namespace AmongUsRegionsEditor
             this.lblWarning = new System.Windows.Forms.Label();
             this.dgvOfficialRegions = new System.Windows.Forms.DataGridView();
             this.gbOfficialRegions = new System.Windows.Forms.GroupBox();
+            this.lblSavedRIJ = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCreateRegion = new System.Windows.Forms.Button();
             this.gbCustomRegions = new System.Windows.Forms.GroupBox();
@@ -54,7 +55,6 @@ namespace AmongUsRegionsEditor
             this.lblName = new System.Windows.Forms.Label();
             this.lblFqdn = new System.Windows.Forms.Label();
             this.txtFqdn = new System.Windows.Forms.TextBox();
-            this.lblSavedRIJ = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomRegions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOfficialRegions)).BeginInit();
             this.gbOfficialRegions.SuspendLayout();
@@ -92,10 +92,10 @@ namespace AmongUsRegionsEditor
             this.lblWarning.BackColor = System.Drawing.SystemColors.Control;
             this.lblWarning.Location = new System.Drawing.Point(13, 13);
             this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(690, 13);
+            this.lblWarning.Size = new System.Drawing.Size(639, 13);
             this.lblWarning.TabIndex = 2;
             this.lblWarning.Text = "This program currently only supports DNS Regions, Static Regions (like Impostor) " +
-    "will be ignored, so when you click save, these maybe removed) ";
+    "will be converted to DNS region format automatically.";
             // 
             // dgvOfficialRegions
             // 
@@ -136,15 +136,27 @@ namespace AmongUsRegionsEditor
             this.gbOfficialRegions.TabStop = false;
             this.gbOfficialRegions.Text = "Official Regions - Found in your regioninfo.json but not available for editing!";
             // 
+            // lblSavedRIJ
+            // 
+            this.lblSavedRIJ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSavedRIJ.AutoSize = true;
+            this.lblSavedRIJ.Location = new System.Drawing.Point(430, 100);
+            this.lblSavedRIJ.Name = "lblSavedRIJ";
+            this.lblSavedRIJ.Size = new System.Drawing.Size(314, 13);
+            this.lblSavedRIJ.TabIndex = 11;
+            this.lblSavedRIJ.Text = "Note:- Saving now occurs automatically when changes are made";
+            // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSave.Enabled = false;
             this.btnSave.Location = new System.Drawing.Point(625, 74);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(119, 23);
             this.btnSave.TabIndex = 10;
             this.btnSave.Text = "Save RegionInfo.json";
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Visible = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnCreateRegion
@@ -356,16 +368,6 @@ namespace AmongUsRegionsEditor
             this.txtFqdn.Name = "txtFqdn";
             this.txtFqdn.Size = new System.Drawing.Size(176, 20);
             this.txtFqdn.TabIndex = 94;
-            // 
-            // lblSavedRIJ
-            // 
-            this.lblSavedRIJ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSavedRIJ.AutoSize = true;
-            this.lblSavedRIJ.Location = new System.Drawing.Point(629, 100);
-            this.lblSavedRIJ.Name = "lblSavedRIJ";
-            this.lblSavedRIJ.Size = new System.Drawing.Size(103, 13);
-            this.lblSavedRIJ.TabIndex = 11;
-            this.lblSavedRIJ.Text = "                                ";
             // 
             // formAURE
             // 

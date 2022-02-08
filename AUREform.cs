@@ -71,18 +71,21 @@ namespace AmongUsRegionsEditor
             Dictionary<string, string> reg = new Dictionary<string, string>();
             string regiontype = null;
             int addedrownumber = 0;
+            List<Server> servers = new List<Server>();
             foreach (Region r in regions)
             {
                 if (r.PingServer == null)
                 {
                     regiontype = dnstype;
+                    servers = null;
                 }
                 else
                 {
                     regiontype = statictype;
+                    servers = r.Servers;
                 }
 
-                AddDataToRegionTables(addedrownumber, false, regiontype, r.Fqdn, r.DefaultIp, r.Port.ToString(),r.useDtls, r.Name, r.PingServer, null, r.TranslateName.ToString());
+                AddDataToRegionTables(addedrownumber, false, regiontype, r.Fqdn, r.DefaultIp, r.Port.ToString(),r.useDtls, r.Name, r.PingServer, servers, r.TranslateName.ToString());
                 addedrownumber = addedrownumber + 1;
                 /*if (r.Type == "DnsRegionInfo, Assembly-CSharp")
                 {
@@ -121,8 +124,9 @@ namespace AmongUsRegionsEditor
         }
 
         internal int imp = 0;
+        bool saveFlag = false;
 
-        internal void AddDataToRegionTables(int row, bool imported, string type, string fqdn, string defaultip, string port, string usedtls, string name, string pingserver, List<string> serversdata, string translatename)
+        internal void AddDataToRegionTables(int row, bool imported, string type, string fqdn, string defaultip, string port, string usedtls, string name, string pingserver, List<Server> serversdata, string translatename)
         {
             if (imported)
             {
@@ -153,12 +157,31 @@ namespace AmongUsRegionsEditor
                     dgvCustomRegions.Rows[customrows].Cells[9] = GenerateButton(9, "Export Region");
                 }
             }
-            //for once we support static regions
+            else if(type==statictype)
+            {
+                saveFlag = true;
+                //basic supported conversion of old static regions.
+                int officialrows = dgvOfficialRegions.Rows.Count;
+                int customrows = dgvCustomRegions.Rows.Count;
+                foreach (Server server in serversdata)
+                {
+                    dgvCustomRegions.Rows.Add("DNS", server.Ip, server.Ip, server.Port, "false", server.Name, translatename, "", "");
+                    dgvCustomRegions.Rows[customrows].Cells[7] = GenerateButton(7, "Edit Region");
+                    dgvCustomRegions.Rows[customrows].Cells[8] = GenerateButton(8, "Remove Region");
+                    dgvCustomRegions.Rows[customrows].Cells[9] = GenerateButton(9, "Export Region");
+                }
+            }
+            //for once we support static regions, if we ever choose to do so.
             //dgvRegions.Rows.Add(type, fqdn, defaultip, port, name, translatename, pingserver);
 
             //resizing dgv's so they look nice and neat
             ResetDgvHeightAndWidth(dgvOfficialRegions, 0, 0);
             ResetDgvHeightAndWidth(dgvCustomRegions, 21, 0);
+            if(saveFlag==true)
+            {
+                WriteRegionInfoJson();
+                saveFlag = false;
+            }
         }
 
         private void ResetDgvHeightAndWidth(DataGridView dgvtable, int extrawidth, int extraheight)
@@ -341,15 +364,16 @@ namespace AmongUsRegionsEditor
         private void btnRemoveRegion_Click(object sender, EventArgs e, int row)
         {
             var senderGrid = (DataGridView)sender;
-            string removekey = (string)senderGrid.Rows[row].Cells[7].Value;
+            string removekey = (string)senderGrid.Rows[row].Cells[8].Value;
             if (removekey.Contains("Remove"))
             {
-                senderGrid.Rows[row].Cells[7].Value = "Confirm?";
+                senderGrid.Rows[row].Cells[8].Value = "Confirm?";
             }
             else
             {
                 dgvCustomRegions.Rows.RemoveAt(row);
                 ResetDgvHeightAndWidth(dgvCustomRegions, 21, 0);
+                WriteRegionInfoJson();
             }
         }
 
@@ -369,6 +393,7 @@ namespace AmongUsRegionsEditor
 
             JObject dnsregion = DNSRegion(type, fqdn, ipaddress, port,usedtls, name, translatename);
             File.WriteAllText(@".\Export\AmongUsRegion-"+name+".aur", JsonConvert.SerializeObject(dnsregion));
+            MessageBox.Show($"{name} was successfully Exported, please check 'Export' folder");
         }
 
         private void ImportOnLoad()
@@ -404,7 +429,8 @@ namespace AmongUsRegionsEditor
             }
             if(filecount!=0)
             {
-                WriteRegionInfoJson();
+                //not needed? should save on manage dns region data?
+                //WriteRegionInfoJson();
                 string listofregions = "";
                 foreach(string region in regionnames)
                 {
@@ -454,6 +480,7 @@ namespace AmongUsRegionsEditor
                 dgvCustomRegions.Rows[row].Cells[5].Value = name;
                 dgvCustomRegions.Rows[row].Cells[6].Value = translatename;
             }
+            WriteRegionInfoJson();
         }
 
         private void chkDNS_CheckedChanged(object sender, EventArgs e)
@@ -519,6 +546,8 @@ namespace AmongUsRegionsEditor
             File.WriteAllText(path, JsonConvert.SerializeObject(Root));
         }
 
+        //no longer required?
+        
         private void btnSave_Click(object sender, EventArgs e)
         {
             btnSave.Enabled = false;
