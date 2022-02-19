@@ -140,7 +140,7 @@ namespace AmongUsRegionsEditor
             // 
             this.lblSavedRIJ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSavedRIJ.AutoSize = true;
-            this.lblSavedRIJ.Location = new System.Drawing.Point(430, 100);
+            this.lblSavedRIJ.Location = new System.Drawing.Point(450, 153);
             this.lblSavedRIJ.Name = "lblSavedRIJ";
             this.lblSavedRIJ.Size = new System.Drawing.Size(314, 13);
             this.lblSavedRIJ.TabIndex = 11;

@@ -16,12 +16,15 @@ namespace AmongUsRegionsEditor
 {
     public partial class formAURE : Form
     {
-        string titleText = $"Among Us Region Editor(for 2021-12-14 or newer on PC) v{System.Reflection.Assembly.GetEntryAssembly().GetName().Version}";
+        string titleText = $"Among Us Region Editor(for 2022-2-8 or newer on PC) v{System.Reflection.Assembly.GetEntryAssembly().GetName().Version}";
         string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\..\LocalLow\Innersloth\Among Us\regionInfo.json";
         string testpath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\..\LocalLow\Innersloth\Among Us\regionInfoTest.json";
         //string regiontype = null;
         string dnstype = "DnsRegionInfo, Assembly-CSharp";
         string statictype = "StaticRegionInfo, Assembly-CSharp";
+        string staticHTTPtype = "StaticHttpRegionInfo, Assembly-CSharp";
+
+        int lastUsedRegionNumber = -1;
 
         public formAURE()
         {
@@ -36,6 +39,7 @@ namespace AmongUsRegionsEditor
             this.Height = 500;
             gbCustomRegions.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Root jroot = DeserializeRoot(path);
+            lastUsedRegionNumber = (int)jroot.CurrentRegionIdx;
             CreateRegionTables();
             DeserializeRegions(jroot.Regions);
             ImportOnLoad();
@@ -72,16 +76,34 @@ namespace AmongUsRegionsEditor
             string regiontype = null;
             int addedrownumber = 0;
             List<Server> servers = new List<Server>();
+            
             foreach (Region r in regions)
             {
-                if (r.PingServer == null)
+                bool httpflag = false;
+                if (r.Servers==null)
+                //if (r.PingServer == null)
                 {
                     regiontype = dnstype;
                     servers = null;
                 }
                 else
                 {
-                    regiontype = statictype;
+                    foreach(Server s in r.Servers)
+                    {
+                        if(s.Ip.Contains("http"))
+                        {
+                            httpflag = true;
+                            break;
+                        }
+                    }
+                    if(httpflag)
+                    {
+                        regiontype = staticHTTPtype;
+                    }
+                    else
+                    {
+                        regiontype = statictype;
+                    }
                     servers = r.Servers;
                 }
 
@@ -132,9 +154,26 @@ namespace AmongUsRegionsEditor
             {
                 //do nothing here yet... currently doing this in the import function but ideally want to colour in the rows to show they are imported.
             }
-            if (type == dnstype)
+            if (type == staticHTTPtype)
+            {
+                //new statichttp region type
+                /*            dgvOfficialRegions.Columns.Add("$Type", "$Type");
+            //dgvOfficialRegions.Columns[0].Visible = false;
+            dgvOfficialRegions.Columns.Add("Name", "Name");
+            dgvOfficialRegions.Columns.Add("PingServer", "PingServer");
+            dgvOfficialRegions.Columns.Add("Server.Name", "Server.Name");
+            dgvOfficialRegions.Columns.Add("Server.Ip", "Server.Ip");
+            dgvOfficialRegions.Columns.Add("Server.Port", "Server.Port");
+            dgvOfficialRegions.Columns.Add("TranslateName", "TranslateName");*/
+                foreach (Server server in serversdata)
+                {
+                    dgvOfficialRegions.Rows.Add("staticHTTP", name,pingserver,server.Name, server.Ip, server.Port, server.UseDtls, server.Players,server.ConnectionFailures, translatename, "", "");
+                }
+        }
+            else if(type==dnstype)
             {
                 //we dont support static regions atm, only DNS regions.
+                //this is now old.
                 if (fqdn == "na.mm.among.us" || fqdn == "eu.mm.among.us" || fqdn == "as.mm.among.us")
                 {
                     //Console.WriteLine(fqdn);
@@ -149,12 +188,12 @@ namespace AmongUsRegionsEditor
                 }
                 else
                 {
-                    int officialrows = dgvOfficialRegions.Rows.Count;
-                    int customrows = dgvCustomRegions.Rows.Count;
-                    dgvCustomRegions.Rows.Add("DNS", fqdn, defaultip, port, usedtls, name, translatename, "", "");
-                    dgvCustomRegions.Rows[customrows].Cells[7] = GenerateButton(7, "Edit Region");
-                    dgvCustomRegions.Rows[customrows].Cells[8] = GenerateButton(8, "Remove Region");
-                    dgvCustomRegions.Rows[customrows].Cells[9] = GenerateButton(9, "Export Region");
+                int officialrows = dgvOfficialRegions.Rows.Count;
+                int customrows = dgvCustomRegions.Rows.Count;
+                dgvCustomRegions.Rows.Add("DNS", fqdn, defaultip, port, usedtls, name, translatename, "", "");
+                dgvCustomRegions.Rows[customrows].Cells[7] = GenerateButton(7, "Edit Region");
+                dgvCustomRegions.Rows[customrows].Cells[8] = GenerateButton(8, "Remove Region");
+                dgvCustomRegions.Rows[customrows].Cells[9] = GenerateButton(9, "Export Region");
                 }
             }
             else if(type==statictype)
@@ -210,7 +249,7 @@ namespace AmongUsRegionsEditor
 
         public void CreateRegionTables()
         {
-            dgvOfficialRegions.Columns.Add("$Type", "$Type");
+            /*dgvOfficialRegions.Columns.Add("$Type", "$Type");
             dgvOfficialRegions.Columns[0].Visible = false;
             dgvOfficialRegions.Columns.Add("Fqdn", "DNS");
             dgvOfficialRegions.Columns.Add("DefaultIp", "DefaultIp");
@@ -218,7 +257,25 @@ namespace AmongUsRegionsEditor
             dgvOfficialRegions.Columns.Add("UseDTLS", "UseDTLS");
             dgvOfficialRegions.Columns.Add("Name", "Name");
             dgvOfficialRegions.Columns.Add("TranslateName", "TranslateName");
-            dgvOfficialRegions.Columns[6].Visible = false;
+            dgvOfficialRegions.Columns[6].Visible = false;*/
+
+            //new statichttpformat
+            dgvOfficialRegions.AutoSizeColumnsMode = (DataGridViewAutoSizeColumnsMode)DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dgvOfficialRegions.Columns.Add("$Type", "$Type");
+            dgvOfficialRegions.Columns[0].Visible = false;
+            dgvOfficialRegions.Columns.Add("Name", "Name");
+            dgvOfficialRegions.Columns.Add("PingServer", "PingServer");
+            dgvOfficialRegions.Columns.Add("Server.Name", "Server.Name");
+            dgvOfficialRegions.Columns[3].Visible = false;
+            dgvOfficialRegions.Columns.Add("Server.Ip", "Server.Ip");
+            dgvOfficialRegions.Columns.Add("Server.Port", "Server.Port");
+            dgvOfficialRegions.Columns.Add("Server.UseDtls", "Server.UseDtls");
+            dgvOfficialRegions.Columns.Add("Server.Players", "Server.Players");
+            dgvOfficialRegions.Columns[7].Visible = false;
+            dgvOfficialRegions.Columns.Add("Server.ConnectionFailures", "Server.ConnectionFailures");
+            dgvOfficialRegions.Columns[8].Visible = false;
+            dgvOfficialRegions.Columns.Add("TranslateName", "TranslateName");
+            //dgvOfficialRegions.Columns[6].Visible = false;
 
             dgvCustomRegions.Columns.Add("$Type", "$Type");
             dgvCustomRegions.Columns[0].Visible = false;
@@ -511,12 +568,42 @@ namespace AmongUsRegionsEditor
             return DNSRegion;
         }
 
-        private void WriteRegionInfoJson()
+        private JObject StaticHTTPRegion(string type, string name, string pingserver, List<JObject> servers,int translatename)
         {
+            JObject StaticHTTPRegion = new JObject(
+                new JProperty("$type", type),
+                new JProperty("Name", name),
+                new JProperty("PingServer", pingserver),
+                new JProperty("Servers", servers),
+                new JProperty("TranslateName", translatename)
+                );
+            return StaticHTTPRegion;
+        }
+
+        private JObject Server(string name, string ip, int port,bool usedtls,int players, int connectionfailures)
+        {
+            JObject Server = new JObject(
+                new JProperty("Name", name),
+                new JProperty("Ip", ip),
+                new JProperty("Port", port),
+                new JProperty("UseDtls", usedtls),
+                new JProperty("Players", players),
+                new JProperty("ConnectionFailures", connectionfailures)
+                );
+            return Server;
+        }
+
+        private void WriteRegionInfoJson()
+        {//disable saving for now
+            
             List<JObject> RegionList = new List<JObject>();
+
+            //FORMAT:- type, name, pingserver,servers, translatename
+            List<Tuple<string, string, string, List<JObject>, int>> staticHttpRegions = new List<Tuple<string, string, string, List<JObject>, int>>();
 
             foreach (DataGridViewRow r in dgvOfficialRegions.Rows)
             {
+                /* this needs changing
                 string type = dnstype;
                 string fqdn = (string)r.Cells[1].Value;
                 string ipaddress = (string)r.Cells[2].Value;
@@ -524,8 +611,67 @@ namespace AmongUsRegionsEditor
                 string usedtls = (string)r.Cells[4].Value;
                 string name = (string)r.Cells[5].Value;
                 int translatename = (int)Int32.Parse(r.Cells[6].Value.ToString());
-                RegionList.Add(DNSRegion(type, fqdn, ipaddress, port, usedtls, name, translatename));
+                RegionList.Add(DNSRegion(type, fqdn, ipaddress, port, usedtls, name, translatename));*/
+                //dgvOfficialRegions.Rows.Add("staticHTTP", name, pingserver, server.Name, server.Ip, server.Port, server.UseDtls, server.Players, server.ConnectionFailures, translatename, "", "");
+
+                List<JObject> servers = new List<JObject>();
+                List<Server> realServers = new List<Server>();
+                bool replaceFlag = false;
+                string type = staticHTTPtype;
+                string name = (string)r.Cells[1].Value;
+                string pingserver = (string)r.Cells[2].Value;
+                var OldRegion = new JObject();
+
+                foreach (var reg in staticHttpRegions)
+                {
+                    if (pingserver == reg.Item3)
+                    {
+                        replaceFlag = true;
+                        servers = reg.Item4;
+                        OldRegion = StaticHTTPRegion(reg.Item1,reg.Item2,reg.Item3,reg.Item4,reg.Item5);
+                        break;
+                    }
+                }
+
+                foreach(var newS in servers)
+                {
+                    Server oldS = new Server();
+                    oldS.Name = (string)newS.Property("Name").Value;
+                    oldS.Ip = (string)newS.Property("Ip").Value;
+                    oldS.Port = (int)newS.Property("Port").Value;
+                    oldS.UseDtls = (bool)newS.Property("UseDtls").Value;
+                    oldS.Players = (int)newS.Property("Players").Value;
+                    oldS.ConnectionFailures = (int)newS.Property("ConnectionFailures").Value;
+                }
+
+
+                Server s = new Server();
+                s.Name = (string)r.Cells[3].Value;
+                s.Ip = (string)r.Cells[4].Value;
+                s.Port = (int)r.Cells[5].Value;
+                s.UseDtls = (bool)r.Cells[6].Value;
+                s.Players = (int)r.Cells[7].Value;
+                s.ConnectionFailures = (int)r.Cells[8].Value;
+                realServers.Add(s);
+
+                /*Server s = new Server();
+                s.Name = (string)r.Cells[3].Value;
+                s.Ip = (string)r.Cells[4].Value;
+                s.Port = (int)r.Cells[5].Value;
+                s.UseDtls = (bool)r.Cells[6].Value;
+                s.Players = (int)r.Cells[7].Value;
+                s.ConnectionFailures = (int)r.Cells[8].Value;
+                servers.Add(s);*/
+                servers.Add(Server((string)r.Cells[3].Value, (string)r.Cells[4].Value, (int)r.Cells[5].Value, (bool)r.Cells[6].Value, (int)r.Cells[7].Value, (int)r.Cells[8].Value));
+
+                int translatename = Convert.ToInt32(r.Cells[9].Value.ToString());
+                if (replaceFlag)
+                {
+                    RegionList.Remove(OldRegion);
+                }
+                RegionList.Add(StaticHTTPRegion(type, name, pingserver, servers, (int)translatename));
             }
+
             foreach (DataGridViewRow r in dgvCustomRegions.Rows)
             {
                 string type = dnstype;
@@ -538,12 +684,18 @@ namespace AmongUsRegionsEditor
                 RegionList.Add(DNSRegion(type, fqdn, ipaddress, port, usedtls, name, translatename));
             }
 
+            if(lastUsedRegionNumber>RegionList.Count-1)
+            {
+                lastUsedRegionNumber = RegionList.Count-1;
+            }
+
             JObject Root = new JObject(
-                new JProperty("CurrentRegionIdx", (int)4),
+                new JProperty("CurrentRegionIdx", (int)lastUsedRegionNumber),
                 new JProperty("Regions",RegionList)
                 );
 
             File.WriteAllText(path, JsonConvert.SerializeObject(Root));
+            
         }
 
         //no longer required?

@@ -15,6 +15,7 @@ namespace AmongUsRegionsEditor
             public string Name { get; set; }
             public string Ip { get; set; }
             public int Port { get; set; }
+            public bool UseDtls { get; set; }
             public int Players { get; set; }
             public int ConnectionFailures { get; set; }
         }
