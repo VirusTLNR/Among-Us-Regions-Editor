@@ -1,5 +1,5 @@
 # AmongUsRegionsEditor
-PLEASE NOTE:- since the updatew to Among Us Version 2022.2.8, this app no longer works as intended, please wait while i fix this issue, thanks
+PLEASE NOTE:- since the update to Among Us Version 2022.2.8, this app no longer works as intended, please wait while i fix this issue, thanks
 
 How-To video -> https://www.youtube.com/watch?v=3V4ggZcT0zU
 
